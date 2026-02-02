@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>пишите с людьми и да эта онлайн</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #111;
+      color: #fff;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      resize: none;
+      background: #111;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <textarea id="notepad" placeholder="это не простой сайт это сайт где можно писать с людьми"></textarea>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbzx0PBohTwtSCJHHkYmdE83kWuUMf7G4",
+      authDomain: "online-notepad-1ae9c.firebaseapp.com",
+      databaseURL: "https://online-notepad-1ae9c-default-rtdb.firebaseio.com",
+      projectId: "online-notepad-1ae9c",
+      storageBucket: "online-notepad-1ae9c.firebasestorage.app",
+      messagingSenderId: "169895485543",
+      appId: "1:169895485543:web:e8ec92fd043ad9e829b4c2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const notepad = document.getElementById("notepad");
+    const noteRef = ref(db, "sharedNote");
+
+    // Получаем текст в реальном времени
+    onValue(noteRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data !== null && notepad.value !== data) {
+        notepad.value = data;
+      }
+    });
+
+    // Отправляем изменения мгновенно
+    notepad.addEventListener("input", () => {
+      set(noteRef, notepad.value);
+    });
+  </script>
+
+</body>
+</html>
